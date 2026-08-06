@@ -1,13 +1,9 @@
-# Project Name
-
-A brief description of your project and its purpose. Explain what problem it solves or what functionality it provides in one or two sentences.
-
 ## Table of Contents
 - [Introduction](#introduction)
 - [Technology Stack](#technology-stack)
 
 ## Introduction
-This project is intended to create java backend application.
+These projects are intended to create java backend application.
 
 ## Technology Stack
 List the major technologies, libraries, or frameworks used in your Java project.
