@@ -18,9 +18,19 @@ public class Task {
     private int id;
 
     private String goal;
+
     private String description;
+
     @Column(name="start_date")
     private LocalDateTime startDateTime;
+
     @Column(name="end_date")
     private LocalDateTime endDateTime;
+
+    public Task(String goal, String description, LocalDateTime startTime, LocalDateTime endTime) {
+        this.goal = goal;
+        this.description = description;
+        this.startDateTime = startTime;
+        this.endDateTime = endTime;
+    }
 }
