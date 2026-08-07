@@ -1,12 +1,10 @@
 package com.app.todolist.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,7 +13,8 @@ import java.time.LocalDateTime;
 @Entity
 public class Task {
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
     private String goal;
 

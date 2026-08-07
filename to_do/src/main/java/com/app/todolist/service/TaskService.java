@@ -18,8 +18,19 @@ public class TaskService {
     public void createNewTask(String goal, String description, LocalDateTime startTime, LocalDateTime endTime) {
         try {
             Task task = new Task(goal, description, startTime, endTime);
+            System.out.println(task);
             taskDao.save(task);
         }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Task deleteTask(Integer id) {
+        try{
+            Task task = taskDao.findById(id).orElse(null);
+            taskDao.deleteById(id);
+            return task;
+        }catch(Exception e){
             throw new RuntimeException(e);
         }
     }
