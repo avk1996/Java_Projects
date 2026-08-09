@@ -2,6 +2,7 @@ package com.app.todolist.controller;
 
 import com.app.todolist.entity.Task;
 import com.app.todolist.service.TaskService;
+import com.app.todolist.utility.TaskStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class TaskController {
                                                 @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime){
             try {
                 System.out.println("start time: "+startTime+", end time: "+endTime);
-                taskService.createNewTask(goal, description, startTime, endTime, false);
+                taskService.createNewTask(goal, description, startTime, endTime);
                 return ResponseEntity.accepted().body("Task created successfully!");
             } catch (Exception e) {
                 return ResponseEntity.badRequest().body("Unable to create Task");
@@ -51,7 +52,7 @@ public class TaskController {
         }
     }
 
-    @GetMapping("tasks")
+    @GetMapping("/tasks")
     public ResponseEntity<List<Task>> getTasks(){
         try {
             List<Task> tasks = taskService.getTasks();
@@ -61,13 +62,49 @@ public class TaskController {
         }
     }
 
-    @GetMapping("task")
+    @GetMapping("/task")
     public ResponseEntity<Task> getTask(@RequestParam Integer id){
         try {
             Task task = taskService.getTask(id);
             return ResponseEntity.accepted().body(task);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @GetMapping("/done_tasks")
+    public ResponseEntity<List<Task>> getDoneTask(){
+        try {
+            return ResponseEntity.accepted().body(taskService.getDoneTasks());
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @GetMapping("/not_done_tasks")
+    public ResponseEntity<List<Task>> getNotDoneTask(){
+        try {
+            return ResponseEntity.accepted().body(taskService.getNotDoneTasks());
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @GetMapping("/in_progress_tasks")
+    public ResponseEntity<List<Task>> getInProgressDoneTask(){
+        try {
+            return ResponseEntity.accepted().body(taskService.getInProgressDoneTasks());
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @PutMapping("/update_task_status/{id}/{status}")
+    public ResponseEntity<Boolean> setTaskDone(@PathVariable int id, @PathVariable TaskStatus status){
+        try{
+            return ResponseEntity.ok(taskService.updateTaskStatus(id, status));
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
         }
     }
 }

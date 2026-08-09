@@ -1,5 +1,6 @@
 package com.app.todolist.entity;
 
+import com.app.todolist.utility.TaskStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,12 +28,14 @@ public class Task {
     private LocalDateTime endDateTime;
 
     @Column(name="complete")
-    private boolean isComplete;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
 
     public Task(String goal, String description, LocalDateTime startTime, LocalDateTime endTime) {
         this.goal = goal;
         this.description = description;
         this.startDateTime = startTime;
         this.endDateTime = endTime;
+        this.status = TaskStatus.IN_PROGRESS;
     }
 }
