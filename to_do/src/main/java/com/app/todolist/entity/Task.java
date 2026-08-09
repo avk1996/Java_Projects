@@ -26,6 +26,9 @@ public class Task {
     @Column(name="end_date")
     private LocalDateTime endDateTime;
 
+    @Column(name="complete")
+    private boolean isComplete;
+
     public Task(String goal, String description, LocalDateTime startTime, LocalDateTime endTime) {
         this.goal = goal;
         this.description = description;
