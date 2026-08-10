@@ -18,10 +18,10 @@ public class TaskService {
     @Autowired
     private TaskDao taskDao;
 
-    public void createNewTask(String goal, String description, LocalDateTime startTime, LocalDateTime endTime) {
+    public void createNewTask(String goal, String description) {
         try {
-            Task task = new Task(goal, description, startTime, endTime);
-            System.out.println(task);
+            Task task = new Task(goal.trim(), description.trim());
+            task.setCreated(LocalDateTime.now());
             taskDao.save(task);
         }catch (Exception e){
             throw new RuntimeException(e);
@@ -44,8 +44,8 @@ public class TaskService {
             System.out.println(existingTask);
             existingTask.setGoal(task.getGoal());
             existingTask.setDescription(task.getDescription());
-            existingTask.setStartDateTime(task.getStartDateTime());
-            existingTask.setEndDateTime(task.getEndDateTime());
+            existingTask.setCreated(task.getCreated());
+            existingTask.setUpdated(LocalDateTime.now());
             existingTask.setStatus(task.getStatus());
             return existingTask;
         } catch (EntityNotFoundException e) {
@@ -73,6 +73,7 @@ public class TaskService {
         try{
             Task task = getTask(id);
             task.setStatus(status);
+            task.setUpdated(LocalDateTime.now());
             return true;
         } catch (RuntimeException e) {
             return false;

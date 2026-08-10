@@ -21,21 +21,19 @@ public class Task {
 
     private String description;
 
-    @Column(name="start_date")
-    private LocalDateTime startDateTime;
+    @Column(name="created")
+    private LocalDateTime created;
 
-    @Column(name="end_date")
-    private LocalDateTime endDateTime;
+    @Column(name="updated")
+    private LocalDateTime updated;
 
     @Column(name="complete")
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
-    public Task(String goal, String description, LocalDateTime startTime, LocalDateTime endTime) {
+    public Task(String goal, String description) {
         this.goal = goal;
         this.description = description;
-        this.startDateTime = startTime;
-        this.endDateTime = endTime;
         this.status = TaskStatus.IN_PROGRESS;
     }
 }

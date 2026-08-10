@@ -20,12 +20,9 @@ public class TaskController {
 
     @PostMapping("/create_task")
     public ResponseEntity<String> createNewTask(@RequestParam String goal,
-                                                @RequestParam(required = false) String description,
-                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
-                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime){
+                                                @RequestParam(required = false) String description){
             try {
-                System.out.println("start time: "+startTime+", end time: "+endTime);
-                taskService.createNewTask(goal, description, startTime, endTime);
+                taskService.createNewTask(goal, description);
                 return ResponseEntity.accepted().body("Task created successfully!");
             } catch (Exception e) {
                 return ResponseEntity.badRequest().body("Unable to create Task");
@@ -35,7 +32,6 @@ public class TaskController {
     @PutMapping("/update_task/{id}")
     public ResponseEntity<String> updateTask(@PathVariable  int id, @RequestBody Task task){
         try {
-            System.out.println(task.getStartDateTime()+", "+task.getEndDateTime());
             taskService.updateTask(id, task);
             return ResponseEntity.accepted().body("Updated Task!");
         } catch (Exception e) {
