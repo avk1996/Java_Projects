@@ -4,16 +4,21 @@ import com.app.todolist.dao.TaskDao;
 import com.app.todolist.entity.Task;
 import com.app.todolist.utility.TaskStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 @Transactional
 public class TaskService {
+
+    private static final Logger LOGGER = Logger.getLogger(TaskService.class.getName());
 
     @Autowired
     private TaskDao taskDao;
@@ -24,7 +29,7 @@ public class TaskService {
             task.setCreated(LocalDateTime.now());
             taskDao.save(task);
         }catch (Exception e){
-            throw new RuntimeException(e);
+            LOGGER.log(Level.SEVERE, "Unable to save task");
         }
     }
 
@@ -34,7 +39,8 @@ public class TaskService {
             taskDao.deleteById(id);
             return task;
         }catch(Exception e){
-            throw new RuntimeException(e);
+            LOGGER.log(Level.WARNING, "Task is unavailable to remove");
+            return null;
         }
     }
 
@@ -49,7 +55,8 @@ public class TaskService {
             existingTask.setStatus(task.getStatus());
             return existingTask;
         } catch (EntityNotFoundException e) {
-            throw new RuntimeException(e);
+            LOGGER.info("Task was unable to update: "+e.getLocalizedMessage());
+            return null;
         }
     }
 
@@ -57,7 +64,8 @@ public class TaskService {
         try {
             return taskDao.findAll();
         }catch (Exception e){
-            throw new RuntimeException(e);
+            LOGGER.info("Task does not exists: "+e.getLocalizedMessage());
+            return null;
         }
     }
 
@@ -65,7 +73,8 @@ public class TaskService {
         try{
             return taskDao.findById(id).orElse(null);
         } catch (EntityNotFoundException e) {
-            throw new RuntimeException(e);
+            LOGGER.info("Task of id: "+id+", does not present at the moment: "+e.getLocalizedMessage());
+            return null;
         }
     }
 
@@ -76,6 +85,7 @@ public class TaskService {
             task.setUpdated(LocalDateTime.now());
             return true;
         } catch (RuntimeException e) {
+            LOGGER.info("Unable to update task of id: "+id+", of status: "+status+", Error: "+e.getLocalizedMessage());
             return false;
         }
     }
@@ -84,7 +94,8 @@ public class TaskService {
         try {
             return taskDao.findByStatusEquals(TaskStatus.DONE);
         }catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+            LOGGER.info("Done Tasks not available: "+e.getLocalizedMessage());
+            return null;
         }
     }
 
@@ -92,7 +103,8 @@ public class TaskService {
         try {
             return taskDao.findByStatusEquals(TaskStatus.NOT_DONE);
         }catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+            LOGGER.info("Not Done Tasks not available: "+e.getLocalizedMessage());
+            return null;
         }
     }
 
@@ -100,7 +112,8 @@ public class TaskService {
         try {
             return taskDao.findByStatusEquals(TaskStatus.IN_PROGRESS);
         }catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+            LOGGER.info("In Progress Tasks not available: "+e.getLocalizedMessage());
+            return null;
         }
     }
 }
