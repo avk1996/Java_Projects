@@ -1,6 +1,7 @@
 ## Table of Contents
 - [Introduction](#introduction)
 - [Technology Stack](#technology-stack)
+- [Projects](#projects)
 
 ## Introduction
 These projects are intended to create java backend application.
@@ -14,5 +15,10 @@ List the major technologies, libraries, or frameworks used in your Java project.
 - SQL
 
 For Cloning the repository use the following:
-   ```bash
+```bash
    git clone https://github.com/your-username/project-name.git
+```
+
+## Projects
+
+1. To Do List
