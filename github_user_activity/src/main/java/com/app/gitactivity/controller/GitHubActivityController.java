@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.http.HttpClient;
-import java.net.http.HttpResponse;
 import java.util.logging.Logger;
 
 @RestController
@@ -27,6 +25,15 @@ public class GitHubActivityController {
             String json = gitHubActivityService.getJSON(userName);
             return ResponseEntity.ok(json);
         }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @GetMapping("/activity/today/{user_name}")
+    public ResponseEntity<String> getTodayActivity(@PathVariable(name = "user_name") String userName){
+        try{
+            return ResponseEntity.ok(gitHubActivityService.getTodayActivity(userName).trim());
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
