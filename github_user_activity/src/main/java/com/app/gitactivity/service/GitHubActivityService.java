@@ -57,6 +57,7 @@ public class GitHubActivityService {
                 String commitDate = person.getString("created_at");
                 String user = person.getJSONObject("actor").getString("display_login");
                 String repoName = person.getJSONObject("repo").getString("name");
+
                 if(String.valueOf(LocalDate.now()).equals(commitDate.replaceAll("T.*", "")))
                     commits++;
                 gitInfo = user + " Pushed "+ commits + " commits to " +repoName;
