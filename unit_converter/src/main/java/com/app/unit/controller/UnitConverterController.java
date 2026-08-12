@@ -21,9 +21,9 @@ public class UnitConverterController {
     public ResponseEntity<BigDecimal> convert(@PathVariable BigDecimal value1,
                                               @PathVariable BigDecimal value2){
         try{
-            ResponseEntity.ok(unitConverterService.convert(value1,value2));
+            return ResponseEntity.ok(unitConverterService.convert(value1,value2));
         }catch (Exception e){
-            ResponseEntity.badRequest().body("unable to convert!");
+            return ResponseEntity.badRequest().body(new BigDecimal(""));
         }
     }
 }
