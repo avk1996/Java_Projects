@@ -1,31 +1,31 @@
 package com.app.expense.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.hibernate.annotations.Entity;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
 @Entity
 public class Expense {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String description;
 
     @Column(name = "spending_date")
-    private LocalDateTime spendingDate;
+    private LocalDate spendingDate;
 
     @Column(name = "spending_time")
+    @JsonFormat(pattern="HH:mm")
     private LocalTime spendingTime;
 
     private BigDecimal amount;
 
-    @OneToOne
+    @ManyToOne
     private User user;
 }

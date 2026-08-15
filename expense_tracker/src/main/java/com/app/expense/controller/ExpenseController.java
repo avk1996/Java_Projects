@@ -13,13 +13,12 @@ public class ExpenseController {
     @Autowired
     private ExpenseService expenseService;
 
-    @PostMapping("/add_expense/{user}")
-    public ResponseEntity<String> addExpense(@PathVariable String user, @RequestBody Expense expense){
+    @PostMapping("/add_expense")
+    public ResponseEntity<Expense> addExpense(@RequestBody Expense expense){
         try {
-            expenseService.addExpense(user, expense);
-            return ResponseEntity.ok("");
+            return ResponseEntity.ok(expenseService.addExpense(expense));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("");
+            return ResponseEntity.badRequest().body(null);
         }
     }
 }

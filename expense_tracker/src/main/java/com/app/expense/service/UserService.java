@@ -1,7 +1,7 @@
 package com.app.expense.service;
 
-import com.app.expense.dao.ExpenseDao;
-import com.app.expense.entity.Expense;
+import com.app.expense.dao.UserDao;
+import com.app.expense.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,13 +9,13 @@ import javax.transaction.Transactional;
 
 @Service
 @Transactional
-public class ExpenseService {
+public class UserService {
     @Autowired
-    ExpenseDao expenseDao;
-    public Expense addExpense(Expense expense){
+    UserDao userDao;
+    public User addUser(User user){
         try{
-            return expenseDao.save(expense);
-        }catch (Exception e){
+            return userDao.save(user);
+        } catch (Exception e) {
             return null;
         }
     }
