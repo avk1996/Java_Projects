@@ -3,6 +3,7 @@ package com.app.expense.service;
 import com.app.expense.dao.ExpenseDao;
 import com.app.expense.dao.UserDao;
 import com.app.expense.entity.Expense;
+import com.app.expense.entity.User;
 import com.app.expense.request_dto.ExpenseRequestDTO;
 import com.app.expense.response_dto.ExpenseResponseDTO;
 import org.modelmapper.ModelMapper;
@@ -110,6 +111,31 @@ public class ExpenseService {
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public List<ExpenseResponseDTO> getExpensesByUserAndMonth(int userId, int month) {
+        try{
+            if(!userDao.existsById(userId))
+                throw new NoSuchElementException("User does not exist, therefore record doesnot contain");
+            if(month <= 0 || month > 12)
+                return new ArrayList<>();
+
+            int currentYear = LocalDate.now().getYear();
+            LocalDate startDate = LocalDate.of(currentYear, month, 1);
+            LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+            logger.info("Month: "+month+", start date: "+startDate+", end date: "+endDate);
+
+            List<Expense> expenses = expenseDao.findByUserIdAndSpendingDateBetween(userId, startDate, endDate);
+
+            if(expenses.isEmpty())
+                throw new RuntimeException("Record is empty of user");
+
+            return expenses.stream().map(expense -> modelMapper.map(expense, ExpenseResponseDTO.class)).toList();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

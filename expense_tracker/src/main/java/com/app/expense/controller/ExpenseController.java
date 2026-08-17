@@ -75,4 +75,14 @@ public class ExpenseController {
             return ResponseEntity.noContent().build();
         }
     }
+
+    @GetMapping("/expense_records/{user_id}/{month}")
+    public ResponseEntity<List<ExpenseResponseDTO>> getExpensesByUserAndMonth(@PathVariable("user_id") int userId, @PathVariable int month){
+        try{
+            logger.info("User of {}: Show records as per months: {}", userId, month);
+            return ResponseEntity.ok(expenseService.getExpensesByUserAndMonth(userId, month));
+        } catch (Exception e) {
+            return ResponseEntity.noContent().build();
+        }
+    }
 }
