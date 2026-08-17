@@ -6,8 +6,9 @@ import com.app.expense.entity.Expense;
 import com.app.expense.request_dto.ExpenseRequestDTO;
 import com.app.expense.response_dto.ExpenseResponseDTO;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,6 +20,8 @@ import java.util.NoSuchElementException;
 @Service
 @Transactional
 public class ExpenseService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ExpenseService.class);
 
     @Autowired
     ExpenseDao expenseDao;
@@ -90,14 +93,16 @@ public class ExpenseService {
         }
     }
 
-    public List<ExpenseResponseDTO> getExpenseRecordsByMonth(int month) {
+    public List<ExpenseResponseDTO> getExpensesByMonthOfCurrentYear(int month) {
         try{
-            if(month >=1 && month <=12)
+            if(month <= 0 || month > 12)
                 return new ArrayList<>();
 
             int currentYear = LocalDate.now().getYear();
             LocalDate startDate = LocalDate.of(currentYear, month, 1);
             LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+            logger.info("Month: "+month+", start date: "+startDate+", end date: "+endDate);
 
             List<Expense> expenses = expenseDao.findBySpendingDateBetween(startDate, endDate);
 

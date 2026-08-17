@@ -3,16 +3,19 @@ package com.app.expense.controller;
 import com.app.expense.request_dto.ExpenseRequestDTO;
 import com.app.expense.response_dto.ExpenseResponseDTO;
 import com.app.expense.service.ExpenseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/expense")
 public class ExpenseController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ExpenseController.class);
 
     @Autowired
     private ExpenseService expenseService;
@@ -66,7 +69,8 @@ public class ExpenseController {
     @GetMapping("/expense_records_by_month/{month}")
     public ResponseEntity<List<ExpenseResponseDTO>> getExpenseRecordsByMonth(@PathVariable int month){
         try{
-            return ResponseEntity.ok(expenseService.getExpenseRecordsByMonth(month));
+            logger.info("Show records as per months: {}", month);
+            return ResponseEntity.ok(expenseService.getExpensesByMonthOfCurrentYear(month));
         } catch (Exception e) {
             return ResponseEntity.noContent().build();
         }
