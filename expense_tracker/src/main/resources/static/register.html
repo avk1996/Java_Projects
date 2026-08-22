@@ -1,10 +1,290 @@
-<div>
-    <form action="/register" method="post">
-        <div>
-            <label>Username: <input type="text" name="username" required/></label>
-            <label>Email: <input type="text" name="gmail" required/> </label>
-            <label>Password: <input type="password" name="password" required/> </label>
-            <button type="submit">Register Account</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | Expense Tracker Hub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background:
+                    radial-gradient(circle at top left, #243b55, transparent 45%),
+                    radial-gradient(circle at bottom right, #141e30, transparent 45%),
+                    #0b1020;
+
+            color: white;
+        }
+
+        .register-container {
+            width: 420px;
+            padding: 40px;
+
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #b8c1d1;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #dce3ef;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 15px;
+
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+
+            background: rgba(0, 0, 0, 0.25);
+            color: white;
+
+            outline: none;
+            font-size: 15px;
+
+            transition: 0.3s;
+        }
+
+        input::placeholder {
+            color: #7f899c;
+        }
+
+        input:focus {
+            border-color: #6c8cff;
+            box-shadow: 0 0 0 3px rgba(108, 140, 255, 0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+
+            border: none;
+            border-radius: 10px;
+
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+
+            font-size: 16px;
+            font-weight: 600;
+
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(118, 75, 162, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #aeb8ca;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #8ea2ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                width: 90%;
+                padding: 30px 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="register-container">
+
+    <div class="logo">💰</div>
+
+    <h1>Create Account</h1>
+
+    <p class="subtitle">
+        Start managing your expenses smarter.
+    </p>
+
+    <form id="registerForm">
+
+        <div class="input-group">
+            <label for="name">Full Name</label>
+            <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your name"
+                    required>
         </div>
+
+        <div class="input-group">
+            <label for="email">Email</label>
+            <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required>
+        </div>
+
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input
+                    type="password"
+                    id="password"
+                    placeholder="Create a password"
+                    minlength="6"
+                    required>
+        </div>
+
+        <button type="submit">
+            Create Account 🚀
+        </button>
+
+        <p id="message"></p>
+
     </form>
+
+    <div class="login-link">
+        Already have an account?
+        <a href="login.html">Login</a>
+    </div>
+
 </div>
+
+
+<script>
+
+    const form = document.getElementById("registerForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const user = {
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
+        };
+
+        message.textContent = "Creating your account...";
+        message.style.color = "#b8c1d1";
+
+        try {
+
+            const response = await fetch(
+                "/expense_tracker_hub/api/expense/add_user",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(user)
+                }
+            );
+
+            console.log("STATUS:", response.status);
+            console.log("URL:", response.url);
+            console.log("is redirected: "+response.redirected)
+            console.log("RESPONSE:", await response.text());
+            if (response.ok) {
+
+                message.textContent =
+                    "🎉 Account created successfully!";
+
+                message.style.color = "#5ee7a1";
+                form.reset();
+
+                // setTimeout(() => {
+                //     window.location.href = "login.html";
+                // }, 1500);
+
+            } else {
+
+                const errorText = await response.text();
+
+                message.textContent =
+                    errorText || "Unable to create account.";
+
+                message.style.color = "#ff6b6b";
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            message.textContent =
+                "❌ Unable to connect to the server.";
+
+            message.style.color = "#ff6b6b";
+        }
+
+    });
+
+</script>
+
+</body>
+</html>

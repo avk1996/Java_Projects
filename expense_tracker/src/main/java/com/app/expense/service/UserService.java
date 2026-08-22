@@ -22,7 +22,7 @@ public class UserService {
     public User addUser(User user){
         try{
             User newUser = new User();
-            newUser.setName(user.getUsername());
+            newUser.setName(user.getName());
             newUser.setEmail(user.getEmail());
             String encryptPassword = passwordEncoder.encode(user.getPassword());
             newUser.setPassword(encryptPassword);
