@@ -3,6 +3,7 @@ package com.app.expense.service;
 import com.app.expense.dao.UserDao;
 import com.app.expense.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,9 +16,18 @@ public class UserService {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     public User addUser(User user){
         try{
-            return userDao.save(user);
+            User newUser = new User();
+            newUser.setName(user.getUsername());
+            newUser.setEmail(user.getEmail());
+            String encryptPassword = passwordEncoder.encode(user.getPassword());
+            newUser.setPassword(encryptPassword);
+
+            return userDao.save(newUser);
         } catch (Exception e) {
             return null;
         }

@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -24,7 +24,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -32,9 +32,16 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers().permitAll()
-                                .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults());
+                        {
+                            auth.requestMatchers("/login.html", "/register.html").permitAll();
+                            auth.anyRequest().authenticated();
+                        }
+                )
+                .formLogin(form ->
+                        form.loginPage("/login.html")
+                                .loginProcessingUrl("/login")
+                                .defaultSuccessUrl("/swagger-ui/index.html", true)
+                                .permitAll());
 
         return http.build();
     }

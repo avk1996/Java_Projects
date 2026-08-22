@@ -11,4 +11,6 @@ public interface UserAuthenticationDao extends JpaRepository<User, Integer> {
     Optional<User> findByNameAndPassword(String name, String password);
 
     Optional<User> findByName(String username);
+
+    Optional<String> findByPassword(String identifier);
 }
