@@ -3,6 +3,7 @@ package com.app.expense.controller;
 import com.app.expense.request_dto.ExpenseRequestDTO;
 import com.app.expense.response_dto.ExpenseResponseDTO;
 import com.app.expense.service.ExpenseService;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,9 @@ public class ExpenseController {
     private ExpenseService expenseService;
 
     @PostMapping("/add_expense")
-    public ResponseEntity<ExpenseResponseDTO> addExpense(@RequestBody ExpenseRequestDTO expense){
+    public ResponseEntity<ExpenseResponseDTO> addExpense(@RequestBody ExpenseRequestDTO expense, Authentication authentication){
         try {
-            return ResponseEntity.ok(expenseService.addExpense(expense));
+            return ResponseEntity.ok(expenseService.addExpense(authentication, expense));
         }catch (Exception e){
             return ResponseEntity.notFound().build();
         }
@@ -61,6 +62,15 @@ public class ExpenseController {
     public ResponseEntity<List<ExpenseResponseDTO>> getExpenseRecordsByUserID(@PathVariable("user_id") int userId){
         try{
             return ResponseEntity.ok(expenseService.getExpenseRecordsByUserID(userId));
+        } catch (Exception e) {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+    @GetMapping("/get_expense_records_user")
+    public ResponseEntity<List<ExpenseResponseDTO>> getExpenseRecordsByAuthenticatedUser(Authentication authentication){
+        try{
+            return ResponseEntity.ok(expenseService.getExpenseRecordsByUsername(authentication));
         } catch (Exception e) {
             return ResponseEntity.noContent().build();
         }

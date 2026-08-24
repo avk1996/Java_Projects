@@ -24,7 +24,7 @@ public class UserAuthenticationController {
         try {
             String userName = loginRequest.get("user_name");
             String password = loginRequest.get("password");
-            logger.info(">> {}", userName);
+            logger.info("{}", userName);
             User loggedInUser = userAuthenticationService.login(userName, password);
 
             return ResponseEntity.ok(loggedInUser);

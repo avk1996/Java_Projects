@@ -6,6 +6,7 @@ import com.app.expense.entity.Expense;
 import com.app.expense.entity.User;
 import com.app.expense.request_dto.ExpenseRequestDTO;
 import com.app.expense.response_dto.ExpenseResponseDTO;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,15 +34,25 @@ public class ExpenseService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public ExpenseResponseDTO addExpense(ExpenseRequestDTO expenseRequestDTO){
+    public ExpenseResponseDTO addExpense(Authentication authentication, ExpenseRequestDTO expenseRequestDTO){
         try{
-            boolean isUserExists = userDao.existsById(expenseRequestDTO.getUserId());
-            System.out.println("is user exists: "+isUserExists);
-            if(!isUserExists)
-                throw new RuntimeException("User does not exists");
-            Expense expense = modelMapper.map(expenseRequestDTO, Expense.class);
-            Expense expenseAdded = expenseDao.save(expense);
-            return modelMapper.map(expenseAdded, ExpenseResponseDTO.class);
+            String authenticatedUsername = authentication.name();
+            System.out.println(authenticatedUsername);
+            User authenticateUser = userDao.findByName(authenticatedUsername).orElseThrow(() -> new RuntimeException("User not found"));
+            if(!authenticateUser.getId().equals(expenseRequestDTO.getUserId()))
+                throw new RuntimeException("You cannot add expense for another user");
+
+            Expense expense = new Expense();
+
+            expense.setAmount(expenseRequestDTO.getAmount());
+            expense.setDescription(expenseRequestDTO.getDescription());
+            expense.setSpendingTime(expenseRequestDTO.getSpendingTime());
+            expense.setSpendingDate(expenseRequestDTO.getSpendingDate());
+
+            expense.setUser(authenticateUser);
+
+            return modelMapper.map(expenseDao.save(expense), ExpenseResponseDTO.class);
+
         }catch (RuntimeException exception){
             throw new NoSuchElementException(exception.getLocalizedMessage());
         }
@@ -125,8 +136,6 @@ public class ExpenseService {
             LocalDate startDate = LocalDate.of(currentYear, month, 1);
             LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
-            logger.info("Month: "+month+", start date: "+startDate+", end date: "+endDate);
-
             List<Expense> expenses = expenseDao.findByUserIdAndSpendingDateBetween(userId, startDate, endDate);
 
             if(expenses.isEmpty())
@@ -136,6 +145,18 @@ public class ExpenseService {
 
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public List<ExpenseResponseDTO> getExpenseRecordsByUsername(Authentication authentication) {
+        try{
+            String authenticatedUsername = authentication.name();
+            System.out.println(authenticatedUsername);
+            User authenticateUser = userDao.findByName(authenticatedUsername).orElseThrow(() -> new RuntimeException("User not found"));
+            List<Expense> expensesPerUsername = expenseDao.findByUser(authenticateUser);
+            return expensesPerUsername.stream().map(expense -> modelMapper.map(expense, ExpenseResponseDTO.class)).toList();
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
         }
     }
 }

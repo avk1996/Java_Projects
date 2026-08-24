@@ -13,6 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -31,20 +37,34 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-            http.csrf(AbstractHttpConfigurer::disable).
+        http.
+                    csrf(AbstractHttpConfigurer::disable).
+                    cors(
+                            cors -> cors
+                                    .configurationSource( request -> {
+                                        CorsConfiguration configuration = new CorsConfiguration();
+
+                                        configuration.setAllowedOrigins(List.of("http://localhost:5173/"));
+                                        configuration.setAllowedMethods(List.of("GET", "POST"));
+                                        configuration.setAllowedHeaders(List.of("*"));
+                                        configuration.setAllowCredentials(true);
+                                        return configuration;
+                                    })).
                     authorizeHttpRequests(auth -> auth
-                            .requestMatchers(new AntPathRequestMatcher("/login.html")).permitAll()
-                            .requestMatchers(new AntPathRequestMatcher("/register.html")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/api/expense/**")).permitAll()
-                            .requestMatchers(new AntPathRequestMatcher("/api/expense/auth/login")).permitAll()
                             .anyRequest().authenticated()
                     )
                 .formLogin(form ->
                         form.loginPage("/login.html")
                                 .loginProcessingUrl("/api/expense/auth/login")
-                                .defaultSuccessUrl("/swagger-ui/index.html", true)
-                                .failureUrl("/login.html?error")
-                                .permitAll());
+                                .successHandler((request, response, authentication)->{
+                                    response.setStatus(HttpServletResponse.SC_OK);
+                                })
+                                .failureHandler((request, response, authentication)->{
+                                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                })
+                                .permitAll()
+                );
 
         return http.build();
     }

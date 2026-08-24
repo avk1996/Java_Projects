@@ -1,6 +1,7 @@
 package com.app.expense.dao;
 
 import com.app.expense.entity.Expense;
+import com.app.expense.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,6 @@ public interface ExpenseDao extends JpaRepository<Expense, Integer> {
     List<Expense> findBySpendingDateBetween(LocalDate startDate, LocalDate endDate);
 
     List<Expense> findByUserIdAndSpendingDateBetween(int userId, LocalDate startDate, LocalDate endDate);
+
+    List<Expense> findByUser(User authenticateUser);
 }

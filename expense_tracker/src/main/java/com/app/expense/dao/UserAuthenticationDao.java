@@ -18,8 +18,4 @@ public interface UserAuthenticationDao extends JpaRepository<User, Integer> {
     );
 
     Optional<User> findByName(String username);
-
-    Optional<String> findByPassword(String identifier);
-
-    String email(String email);
 }
