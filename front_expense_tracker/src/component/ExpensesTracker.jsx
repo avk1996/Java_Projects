@@ -246,14 +246,24 @@ function ExpenseTracker() {
           <input
             type="text"
             placeholder="spendingDate"
-            value={expense.spendingDate}
-            readOnly
+            value={new Date().toISOString().split("T")[0]}
+            onChange={() =>
+              setExpense({
+                ...expense,
+                spendingDate: new Date().toISOString().split("T")[0],
+              })
+            }
           />
           <input
             type="text"
             placeholder="spendingTime"
-            value={expense.spendingTime}
-            readOnly
+            value={new Date().toTimeString().split(" ")[0]}
+            onChange={() =>
+              setExpense({
+                ...expense,
+                spendingTime: new Date().toTimeString().split(" ")[0],
+              })
+            }
           />
           <button
             type="submit"
