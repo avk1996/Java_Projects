@@ -3,10 +3,11 @@ package com.app.expense.controller;
 import com.app.expense.request_dto.ExpenseRequestDTO;
 import com.app.expense.response_dto.ExpenseResponseDTO;
 import com.app.expense.service.ExpenseService;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.core.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,11 +23,11 @@ public class ExpenseController {
     private ExpenseService expenseService;
 
     @PostMapping("/add_expense")
-    public ResponseEntity<ExpenseResponseDTO> addExpense(@RequestBody ExpenseRequestDTO expense, Authentication authentication){
+    public ResponseEntity<?> addExpense(@RequestBody ExpenseRequestDTO expense, Authentication authentication){
         try {
             return ResponseEntity.ok(expenseService.addExpense(authentication, expense));
         }catch (Exception e){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -72,6 +73,7 @@ public class ExpenseController {
         try{
             return ResponseEntity.ok(expenseService.getExpenseRecordsByUsername(authentication));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.noContent().build();
         }
     }

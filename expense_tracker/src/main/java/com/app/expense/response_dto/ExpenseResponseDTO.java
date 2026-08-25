@@ -10,6 +10,8 @@ import java.time.LocalTime;
 
 @Data
 public class ExpenseResponseDTO {
+    private Integer id;
+
     private String description;
 
     private LocalDate spendingDate;

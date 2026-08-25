@@ -6,11 +6,11 @@ import com.app.expense.entity.Expense;
 import com.app.expense.entity.User;
 import com.app.expense.request_dto.ExpenseRequestDTO;
 import com.app.expense.response_dto.ExpenseResponseDTO;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -36,11 +36,9 @@ public class ExpenseService {
 
     public ExpenseResponseDTO addExpense(Authentication authentication, ExpenseRequestDTO expenseRequestDTO){
         try{
-            String authenticatedUsername = authentication.name();
+            String authenticatedUsername = authentication.getName();
             System.out.println(authenticatedUsername);
             User authenticateUser = userDao.findByName(authenticatedUsername).orElseThrow(() -> new RuntimeException("User not found"));
-            if(!authenticateUser.getId().equals(expenseRequestDTO.getUserId()))
-                throw new RuntimeException("You cannot add expense for another user");
 
             Expense expense = new Expense();
 
@@ -150,12 +148,13 @@ public class ExpenseService {
 
     public List<ExpenseResponseDTO> getExpenseRecordsByUsername(Authentication authentication) {
         try{
-            String authenticatedUsername = authentication.name();
+            String authenticatedUsername = authentication.getName();
             System.out.println(authenticatedUsername);
             User authenticateUser = userDao.findByName(authenticatedUsername).orElseThrow(() -> new RuntimeException("User not found"));
             List<Expense> expensesPerUsername = expenseDao.findByUser(authenticateUser);
             return expensesPerUsername.stream().map(expense -> modelMapper.map(expense, ExpenseResponseDTO.class)).toList();
         } catch (RuntimeException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

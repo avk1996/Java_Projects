@@ -45,13 +45,14 @@ public class SecurityConfig {
                                         CorsConfiguration configuration = new CorsConfiguration();
 
                                         configuration.setAllowedOrigins(List.of("http://localhost:5173/"));
-                                        configuration.setAllowedMethods(List.of("GET", "POST"));
+                                        configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
                                         configuration.setAllowedHeaders(List.of("*"));
                                         configuration.setAllowCredentials(true);
                                         return configuration;
                                     })).
                     authorizeHttpRequests(auth -> auth
                             .requestMatchers(new AntPathRequestMatcher("/api/expense/**")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/api/expense/**")).authenticated()
                             .anyRequest().authenticated()
                     )
                 .formLogin(form ->
