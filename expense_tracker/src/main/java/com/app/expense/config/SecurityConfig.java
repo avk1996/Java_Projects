@@ -65,7 +65,13 @@ public class SecurityConfig {
                                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                                 })
                                 .permitAll()
-                );
+                ).logout(out->out
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler((request,response, authentication)->{
+                                response.setStatus(HttpServletResponse.SC_OK);
+                        })
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID"));
 
         return http.build();
     }

@@ -133,8 +133,27 @@ function ExpenseTracker() {
     }
   };
 
+  const logout = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/expense_tracker_hub/logout",
+        {
+          method: "PUT",
+          credentials: "include",
+        },
+      );
+      if (!response.ok) throw new Error("unable to logout");
+      navigate("/login");
+    } catch (error) {
+      console.log("Unable to log out");
+    }
+  };
+
   return (
     <>
+      <div>
+        <button onClick={() => logout()}>Logout</button>
+      </div>
       <div>
         <form onSubmit={addExpense}>
           <input
