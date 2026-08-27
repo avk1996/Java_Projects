@@ -10,15 +10,17 @@ function Register() {
 
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const CONTEXT = import.meta.env.VITE_CONTEXT_PATH;
-  const API = import.meta.env.VITE_API;
-
+  const API = import.meta.env.VITE_API_URI;
   const navigate = useNavigate();
 
   const addUser = async (e) => {
-    console.log("User: " + JSON.stringify(user));
-
+    // e.preventDefault();
+    const registerURL = `${BASE_URL}/${CONTEXT}/${API}/register`;
+    // console.log(
+    //   "User: " + JSON.stringify(user) + ", register log: " + registerURL,
+    // );
     try {
-      const response = await fetch(`${BASE_URL}/${CONTEXT}/${API}/add_user`, {
+      const response = await fetch(registerURL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,6 +29,7 @@ function Register() {
       });
 
       if (!response.ok) throw new Error("Unable to add user");
+      // console.log("response: " + JSON.stringify(response));
     } catch (error) {
       console.log(error);
     }
@@ -61,6 +64,7 @@ function Register() {
                       name: e.target.value,
                     })
                   }
+                  required
                 />
               </div>
               <div className="mb-2">
@@ -69,6 +73,7 @@ function Register() {
                   type="text"
                   placeholder="email"
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
+                  required
                 />
               </div>
               <div className="mb-2">
@@ -79,6 +84,7 @@ function Register() {
                   onChange={(e) =>
                     setUser({ ...user, password: e.target.value })
                   }
+                  required
                 />
               </div>
               <div className="mb-2">

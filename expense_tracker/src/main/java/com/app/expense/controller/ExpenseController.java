@@ -35,6 +35,7 @@ public class ExpenseController {
     public ResponseEntity<ExpenseResponseDTO> updateExpense(@PathVariable ("expense_id") Integer expenseId,
                                                             @RequestBody ExpenseRequestDTO expense){
         try{
+            System.out.println("expense id: "+expenseId);
             return ResponseEntity.ok(expenseService.updateExpense(expenseId, expense));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();

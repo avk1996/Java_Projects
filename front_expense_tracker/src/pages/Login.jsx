@@ -17,12 +17,15 @@ function Login() {
     console.log("username: " + username);
 
     const data = new URLSearchParams();
+    const loginURL = `${BASE_URL}/${CONTEXT}/${API}/auth/login`;
+
+    console.log("Login: " + loginURL);
 
     data.append("username", username);
     data.append("password", password);
 
     try {
-      const response = await fetch(`${BASE_URL}/${CONTEXT}/${API}/auth/login`, {
+      const response = await fetch(loginURL, {
         method: "post",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

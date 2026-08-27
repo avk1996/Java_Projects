@@ -2,11 +2,10 @@ package com.app.expense.service;
 
 import com.app.expense.dao.UserAuthenticationDao;
 import com.app.expense.entity.User;
-import com.app.expense.helper.AuthHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service

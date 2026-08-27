@@ -21,7 +21,6 @@ function ExpenseTracker() {
   const CONTEXT = import.meta.env.VITE_CONTEXT_PATH;
   const API = import.meta.env.VITE_API_URI;
 
-  // console.log(BASE_URL + " " + CONTEXT + " " + API);
   useEffect(() => {
     const now = new Date();
 
@@ -89,18 +88,19 @@ function ExpenseTracker() {
   };
 
   const updateExpense = async (e) => {
-    console.log("Expense: " + JSON.stringify(expense));
+    const updateURL = `${BASE_URL}/${CONTEXT}/${API}/update_expense/${expense.id}`;
+    console.log(
+      "Expense: " + JSON.stringify(expense) + ", update log: " + updateURL,
+    );
     try {
-      const response = await fetch(
-        `${BASE_URL}/${CONTEXT}/${API}/update_expense/` + expense.id,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(expense),
+      const response = await fetch(updateURL, {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(expense),
+      });
       if (!response.ok) throw new Error("Unable to update expense");
       else setShow(true);
     } catch (error) {
@@ -206,9 +206,6 @@ function ExpenseTracker() {
               <button
                 className="bg-blue-600 text-white p-2 mt-1 rounded-2xl hover:bg-blue-900"
                 type="submit"
-                onClick={() => {
-                  console.log("Button clicked");
-                }}
               >
                 Add Expense
               </button>
@@ -327,6 +324,8 @@ function ExpenseTracker() {
                   spendingDate: new Date().toISOString().split("T")[0],
                 })
               }
+              readOnly
+              disabled
             />
           </div>
           <div>
@@ -341,15 +340,14 @@ function ExpenseTracker() {
                   spendingTime: new Date().toTimeString().split(" ")[0],
                 })
               }
+              readOnly
+              disabled
             />
           </div>
           <div>
             <button
               className="bg-blue-600 text-white p-2 mt-1 rounded-2xl hover:bg-blue-900"
               type="submit"
-              onClick={() => {
-                console.log("Button clicked");
-              }}
             >
               Update Expense
             </button>
