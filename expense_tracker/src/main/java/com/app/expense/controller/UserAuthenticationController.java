@@ -1,6 +1,6 @@
 package com.app.expense.controller;
 
-import com.app.expense.entity.User;
+import com.app.expense.response_dto.UserResponseDTO;
 import com.app.expense.service.UserAuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +22,14 @@ public class UserAuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest){
         try {
-            String userName = loginRequest.get("user_name");
+            String userName = loginRequest.get("username");
             String password = loginRequest.get("password");
-            logger.info("{}", userName);
-            User loggedInUser = userAuthenticationService.login(userName, password);
-
-            return ResponseEntity.ok(loggedInUser);
+            logger.info("In controller {}", userName);
+            UserResponseDTO userResponseDTO = userAuthenticationService.login(userName, password);
+            logger.info(userResponseDTO.toString());
+            return ResponseEntity.ok(userResponseDTO);
         } catch (Exception e) {
-            return ResponseEntity.status(401).body(e.getLocalizedMessage());
+            return ResponseEntity.status(403).body(e.getLocalizedMessage());
         }
     }
 }

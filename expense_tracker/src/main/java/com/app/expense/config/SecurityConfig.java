@@ -59,17 +59,7 @@ public class SecurityConfig {
                             .requestMatchers(new AntPathRequestMatcher("/api/expense/**")).authenticated()
                             .anyRequest().authenticated()
                     )
-                .formLogin(form ->
-                        form.loginPage("/login.html")
-                                .loginProcessingUrl("/api/expense/auth/login")
-                                .successHandler((request, response, authentication)->{
-                                    response.setStatus(HttpServletResponse.SC_OK);
-                                })
-                                .failureHandler((request, response, authentication)->{
-                                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                                })
-                                .permitAll()
-                ).logout(out->out
+        .logout(out->out
                         .logoutUrl("/logout")
                         .logoutSuccessHandler((request,response, authentication)->{
                                 response.setStatus(HttpServletResponse.SC_OK);

@@ -1,138 +1,109 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function ExpenseTracker() {
+  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: ["ADMIN", "USER"],
+  });
+
+  const [disable, isDisable] = useState(true);
+
+  const navigate = useNavigate();
+
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const CONTEXT = import.meta.env.VITE_CONTEXT_PATH;
   const API = import.meta.env.VITE_API_URI;
 
-  const [expenses, setExpenses] = useState([]);
-  const [expense, setExpense] = useState({
-    amount: "",
-    description: "",
-    spendingDate: "",
-    spendingTime: "",
-  });
-  const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("");
-  const [spendingDate, setSpendingDate] = useState("");
-  const [spendingTime, setSpendingTime] = useState("");
-  const [show, setShow] = useState(true);
-
-  const location = useLocation();
-
-  const state = location.state?.userType;
-
-  const navigate = useNavigate();
-
   useEffect(() => {
-    const now = new Date();
-
-    const date = now.toISOString().split("T")[0];
-    const time = now.toTimeString().split(" ")[0];
-
-    setSpendingDate(date);
-    setSpendingTime(time);
-
-    const getExpenses = async () => {
-      const expenseURL = `${BASE_URL}/${CONTEXT}/${API}/get_expense_records_user`;
-      console.log("Expense url: " + expenseURL);
+    const getUsers = async () => {
       try {
-        const response = await fetch(expenseURL, {
-          method: "GET",
-          credentials: "include",
-        });
-        if (!response.ok) throw new Error("Failed to fetch expenses");
+        const response = await fetch(
+          `${BASE_URL}/${CONTEXT}/${API}/admin/get_users`,
+          {
+            method: "GET",
+            credentials: "include",
+          },
+        );
+        if (!response.ok) throw new Error("Failed to fetch users");
 
-        const expenseData = await response.json();
+        const userData = await response.json();
 
-        // console.log(expenseData);
+        console.log(userData);
 
-        setExpenses(expenseData);
+        setUser(userData);
       } catch (error) {
         console.log("Error: " + error);
       }
     };
-    getExpenses();
-  }, [amount, description]);
+    getUsers();
+  }, []);
 
-  const addExpense = async (e) => {
-    console.log("added expense");
-    const expense = {
-      amount: amount,
-      description: description,
-      spendingDate: spendingDate,
-      spendingTime: spendingTime,
-    };
-    console.log(JSON.stringify(expense));
+  const addUser = async (newUser) => {
+    setUser(newUser);
+    console.log(JSON.stringify(user));
     try {
       const response = await fetch(
-        `${BASE_URL}/${CONTEXT}/${API}/add_expense`,
+        `${BASE_URL}/${CONTEXT}/${API}/admin/create_user`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           credentials: "include",
-          body: JSON.stringify(expense),
+          body: JSON.stringify(newUser),
         },
       );
-      if (!response.ok) throw new Error("Unable to add expense");
+      if (!response.ok) throw new Error("Unable to add new user");
       const expenseData = await response.json();
       console.log(expenseData);
-      // clear form
-      setAmount("");
-      setDescription("");
-      setSpendingDate("");
-      setSpendingTime("");
     } catch (error) {
       console.log(error);
     }
   };
 
-  const updateExpense = async (e) => {
-    const updateURL = `${BASE_URL}/${CONTEXT}/${API}/update_expense/${expense.id}`;
-    console.log(
-      "Expense: " + JSON.stringify(expense) + ", update log: " + updateURL,
-    );
-    try {
-      const response = await fetch(updateURL, {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(expense),
-      });
-      if (!response.ok) throw new Error("Unable to update expense");
-      else setShow(true);
-    } catch (error) {
-      console.log(error);
-    }
+  // const updateExpense = async (e) => {
+  //   console.log("Expense: " + JSON.stringify(expense));
+  //   try {
+  //     const response = await fetch(
+  //       `${BASE_URL}/${CONTEXT}/${API}/update_expense/` + expense.id,
+  //       {
+  //         method: "PUT",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(expense),
+  //       },
+  //     );
+  //     if (!response.ok) throw new Error("Unable to update expense");
+  //     else setShow(true);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const editUser = (user) => {
+    setUser(user);
+    console.log("User in edit: " + JSON.stringify(user));
   };
 
-  const editExpense = (expense) => {
-    setShow(false);
-    setExpense(expense);
-    console.log("Expense in edit: " + JSON.stringify(expense));
-  };
-
-  const deleteExpense = async (id) => {
-    console.log("Expense " + id + " delete");
+  const deleteUser = async (id) => {
+    console.log("User " + id + " delete");
     try {
       const del = await fetch(
-        `${BASE_URL}/${CONTEXT}/${API}/delete_expense/` + id,
+        `${BASE_URL}/${CONTEXT}/${API}/delete_user/` + id,
         {
           method: "DELETE",
           credentials: "include",
         },
       );
       if (del.ok) {
-        setExpenses((prevExpense) =>
-          prevExpense.filter((expense) => expense.id != id),
-        );
+        setUsers((prevUser) => prevUser.filter((user) => user.id != id));
       } else {
-        throw new Error(id + " expense doesn't exist");
+        throw new Error(id + "User doesn't exist");
       }
     } catch (error) {
       console.log(error);
@@ -154,7 +125,7 @@ function ExpenseTracker() {
 
   return (
     <>
-      <div className="flex flex-row m-3 justify-between">
+      <div className="m-3 justify-items-end">
         <div>
           <button
             className="bg-red-500 text-white pb-1 pt-1 pr-3 pl-3 rounded-2xl hover:bg-red-900"
@@ -163,63 +134,69 @@ function ExpenseTracker() {
             ╰┈➤ Logout
           </button>
         </div>
-        <div>
-          <button
-            hidden={state != "ADMIN"}
-            className="bg-blue-500 text-white pb-1 pt-1 pr-3 pl-3 rounded-2xl hover:bg-blue-900"
-            onClick={() => navigate("/users")}
-          >
-            Manage User
-          </button>
-        </div>
       </div>
       <div className="mt-4 items-center justify-center">
-        <form onSubmit={addExpense}>
+        <form onSubmit={addUser}>
           <div className="flex flex-row place-content-evenly mb-10 ml-5 mr-5 p-3 rounded-xl border-2 shadow-2xl">
             <div>
               <input
                 className="rounded-2xl border-2 p-2 mt-1"
                 type="text"
-                placeholder="Amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                placeholder="name"
+                onChange={(e) =>
+                  setUser({
+                    ...user,
+                    name: e.target.value,
+                  })
+                }
               />
             </div>
             <div>
               <input
                 className="rounded-2xl border-2 p-2 mt-1"
                 type="text"
-                placeholder="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                placeholder="email"
+                onChange={(e) =>
+                  setUser({
+                    ...user,
+                    email: e.target.value,
+                  })
+                }
               />
             </div>
             <div>
               <input
                 className="rounded-2xl border-2 p-2 mt-1"
-                type="text"
-                placeholder="spendingDate"
-                value={spendingDate}
-                readOnly
-                disabled
+                type="password"
+                placeholder="password"
+                value={(e) =>
+                  setUser({
+                    ...user,
+                    password: e.target.value,
+                  })
+                }
               />
             </div>
             <div>
-              <input
+              <select
                 className="rounded-2xl border-2 p-2 mt-1"
-                type="text"
-                placeholder="spendingTime"
-                value={spendingTime}
-                readOnly
-                disabled
-              />
+                onChange={(e) =>
+                  setUser({
+                    ...user,
+                    role: e.target.value,
+                  })
+                }
+              >
+                <option value="USER">User</option>
+                <option value="ADMIN">Admin</option>
+              </select>
             </div>
             <div>
               <button
                 className="bg-blue-600 text-white p-2 mt-1 rounded-2xl hover:bg-blue-900"
                 type="submit"
               >
-                Add Expense
+                Add User
               </button>
             </div>
           </div>
@@ -227,54 +204,51 @@ function ExpenseTracker() {
       </div>
       <div className="flex flex-col items-center justify-center">
         <div className="text-3xl mb-10 p-3 rounded-b-xl shadow-2xl">
-          <h2>My Expenses</h2>
+          <h2>Users and Admins</h2>
         </div>
 
         <div className="overflow-hidden rounded-xl shadow-xl border border-black">
           <table className="border-collapse">
             <thead>
               <tr>
-                <th className="px-6 py-3 border-r border-gray-500">Amount</th>
-                <th className="px-6 py-3 border-r border-gray-500">
-                  Description
-                </th>
-                <th className="px-6 py-3 border-r border-gray-500">
-                  Spending Time
-                </th>
+                <th className="px-6 py-3 border-r border-gray-500">Name</th>
+                <th className="px-6 py-3 border-r border-gray-500">E-mail</th>
+                <th className="px-6 py-3 border-r border-gray-500">Role</th>
                 <th className="px-6 py-3">Action</th>
               </tr>
             </thead>
 
             <tbody>
-              {expenses.map((expense) => (
+              {users.map((user) => (
                 <tr
-                  key={expense.id}
+                  key={user.id}
                   className="border-t border-black hover:bg-gray-100 transition-colors"
                 >
                   <td className="px-6 py-3 text-center border-r border-black">
-                    ₹{expense.amount}
+                    ₹{user.name}
                   </td>
 
                   <td className="px-6 py-3 border-r border-black">
-                    {expense.description}
+                    {user.email}
                   </td>
 
                   <td className="px-6 py-3 text-center border-r border-black">
-                    {expense.spendingDate} {expense.spendingTime}
+                    {user.role}
                   </td>
 
                   <td className="px-6 py-3">
                     <div className="flex gap-3 justify-center">
                       <button
                         className="cursor-pointer hover:scale-125 transition-transform"
-                        onClick={() => editExpense(expense)}
+                        onClick={() => editUser(user)}
+                        disabled
                       >
                         ✏️
                       </button>
 
                       <button
                         className="cursor-pointer hover:scale-125 transition-transform"
-                        onClick={() => deleteExpense(expense.id)}
+                        onClick={() => deleteUser(user.id)}
                       >
                         🧹
                       </button>
@@ -286,10 +260,10 @@ function ExpenseTracker() {
           </table>
         </div>
       </div>
-      <form onSubmit={updateExpense}>
+      {/* <form onSubmit={updateExpense}>
         <div
           className="flex flex-row place-content-evenly mt-10 mb-10 ml-5 mr-5 p-3 rounded-xl border-2 shadow-2xl"
-          hidden={show}
+          hidden={true}
         >
           <div>
             <button
@@ -336,8 +310,6 @@ function ExpenseTracker() {
                   spendingDate: new Date().toISOString().split("T")[0],
                 })
               }
-              readOnly
-              disabled
             />
           </div>
           <div>
@@ -352,20 +324,21 @@ function ExpenseTracker() {
                   spendingTime: new Date().toTimeString().split(" ")[0],
                 })
               }
-              readOnly
-              disabled
             />
           </div>
           <div>
             <button
               className="bg-blue-600 text-white p-2 mt-1 rounded-2xl hover:bg-blue-900"
               type="submit"
+              onClick={() => {
+                console.log("Button clicked");
+              }}
             >
               Update Expense
             </button>
           </div>
         </div>
-      </form>
+      </form> */}
     </>
   );
 }

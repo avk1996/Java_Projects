@@ -2,10 +2,14 @@ package com.app.expense.service;
 
 import com.app.expense.dao.UserAuthenticationDao;
 import com.app.expense.entity.User;
+import com.app.expense.response_dto.UserResponseDTO;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,12 +20,26 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService{
     @Autowired
     private UserAuthenticationDao userAuthenticationDao;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
-    public User login(String identifier, String password) {
+    public UserResponseDTO login(String identifier, String password) {
         try {
-            logger.info(">> {}", identifier);
-            return userAuthenticationDao.login(identifier, password)
-                    .orElseThrow(()->new RuntimeException("Invalid Username/password"));
+            logger.info("In Service {}, {}", identifier, password);
+            User newUser = userAuthenticationDao.login(identifier)
+                    .orElseThrow(()->new RuntimeException("Invalid Username"));
+            if(!passwordEncoder.matches(password, newUser.getPassword()))
+                throw new RuntimeException("Invalid Password");
+
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(newUser.getName(), null, newUser.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+            return modelMapper.map(newUser, UserResponseDTO.class);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

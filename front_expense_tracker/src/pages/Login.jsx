@@ -2,8 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [user, setUser] = useState({
+    username: "",
+    password: "",
+  });
+
+  const [userType, setUserType] = useState("");
 
   const navigate = useNavigate();
 
@@ -14,27 +18,26 @@ function Login() {
   const handleLogin = async (event) => {
     event.preventDefault();
 
-    console.log("username: " + username);
-
-    const data = new URLSearchParams();
     const loginURL = `${BASE_URL}/${CONTEXT}/${API}/auth/login`;
 
-    console.log("Login: " + loginURL);
-
-    data.append("username", username);
-    data.append("password", password);
+    // console.log("Login: " + loginURL);
+    // console.log("User: " + JSON.stringify(user));
 
     try {
       const response = await fetch(loginURL, {
         method: "post",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
         },
-        body: data,
+        body: JSON.stringify(user),
         credentials: "include",
       });
       if (response.ok) {
-        navigate("/expenses");
+        const result = await response.json();
+        setUserType(result.role);
+        navigate("/expenses", {
+          state: { userType: result.role },
+        });
       }
     } catch (error) {
       console.log("Error: " + error);
@@ -54,8 +57,12 @@ function Login() {
                 className="rounded-2xl border-2 p-2 mb-1"
                 type="text"
                 placeholder="Username or Email"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) =>
+                  setUser({
+                    ...user,
+                    username: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="mb-4">
@@ -63,8 +70,12 @@ function Login() {
                 className="rounded-2xl border-2 p-2 mt-1"
                 type="password"
                 placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) =>
+                  setUser({
+                    ...user,
+                    password: e.target.value,
+                  })
+                }
               />
             </div>
             <div>

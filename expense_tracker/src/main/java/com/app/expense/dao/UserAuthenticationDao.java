@@ -11,10 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface UserAuthenticationDao extends JpaRepository<User, Integer> {
-    @Query("SELECT u FROM User u WHERE (u.name = :username OR u.email = :username) AND u.password = :password")
+    @Query("SELECT u FROM User u WHERE (u.name = :username OR u.email = :username)")
     Optional<User> login(
-            @Param("username") String username,
-            @Param("password") String password
+            @Param("username") String username
     );
 
     Optional<User> findByName(String username);
