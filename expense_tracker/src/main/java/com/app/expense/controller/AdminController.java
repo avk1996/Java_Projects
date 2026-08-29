@@ -1,5 +1,6 @@
 package com.app.expense.controller;
 
+import com.app.expense.entity.Expense;
 import com.app.expense.entity.User;
 import com.app.expense.response_dto.UserResponseDTO;
 import com.app.expense.service.UserService;
@@ -19,6 +20,7 @@ public class AdminController {
     @PostMapping("/create_user")
     public ResponseEntity<?> createUser(@RequestBody User user){
         try{
+            System.out.println("In controller: "+user.toString());
             return ResponseEntity.ok(userService.createUser(user));
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
@@ -31,6 +33,17 @@ public class AdminController {
             return ResponseEntity.ok(userService.getUsers());
         } catch (Exception e) {
             return ResponseEntity.noContent().build();
+        }
+    }
+
+    @PutMapping("/update_user/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable ("id") int userId, @RequestBody User user){
+        try {
+            System.out.println("In controller: "+userId);
+            System.out.println(user.toString());
+            return ResponseEntity.ok(userService.updateUser(userId, user));
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
         }
     }
 

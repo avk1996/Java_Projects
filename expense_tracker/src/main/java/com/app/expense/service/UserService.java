@@ -27,7 +27,6 @@ public class UserService {
 
     public UserResponseDTO addUser(User user){
         try{
-            System.out.println("service: "+user.toString());
             User newUser = new User();
             newUser.setName(user.getName());
             newUser.setEmail(user.getEmail());
@@ -72,6 +71,19 @@ public class UserService {
             return modelMapper.map(userDao.save(newUser), UserResponseDTO.class);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public UserResponseDTO updateUser(int userId, User user) {
+        try{
+            User existingUser = userDao.getReferenceById(userId);
+            existingUser.setEmail(user.getEmail());
+            existingUser.setName(user.getName());
+            existingUser.setRole(user.getRole());
+
+            return modelMapper.map(existingUser, UserResponseDTO.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

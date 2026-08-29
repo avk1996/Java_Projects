@@ -36,7 +36,7 @@ function ExpenseTracker() {
 
     const getExpenses = async () => {
       const expenseURL = `${BASE_URL}/${CONTEXT}/${API}/get_expense_records_user`;
-      console.log("Expense url: " + expenseURL);
+      // console.log("Expense url: " + expenseURL);
       try {
         const response = await fetch(expenseURL, {
           method: "GET",
@@ -57,14 +57,14 @@ function ExpenseTracker() {
   }, [amount, description]);
 
   const addExpense = async (e) => {
-    console.log("added expense");
+    // console.log("added expense");
     const expense = {
       amount: amount,
       description: description,
       spendingDate: spendingDate,
       spendingTime: spendingTime,
     };
-    console.log(JSON.stringify(expense));
+    // console.log(JSON.stringify(expense));
     try {
       const response = await fetch(
         `${BASE_URL}/${CONTEXT}/${API}/add_expense`,
@@ -79,7 +79,7 @@ function ExpenseTracker() {
       );
       if (!response.ok) throw new Error("Unable to add expense");
       const expenseData = await response.json();
-      console.log(expenseData);
+      // console.log(expenseData);
       // clear form
       setAmount("");
       setDescription("");
@@ -92,9 +92,9 @@ function ExpenseTracker() {
 
   const updateExpense = async (e) => {
     const updateURL = `${BASE_URL}/${CONTEXT}/${API}/update_expense/${expense.id}`;
-    console.log(
-      "Expense: " + JSON.stringify(expense) + ", update log: " + updateURL,
-    );
+    // console.log(
+    //   "Expense: " + JSON.stringify(expense) + ", update log: " + updateURL,
+    // );
     try {
       const response = await fetch(updateURL, {
         method: "PUT",
@@ -114,11 +114,11 @@ function ExpenseTracker() {
   const editExpense = (expense) => {
     setShow(false);
     setExpense(expense);
-    console.log("Expense in edit: " + JSON.stringify(expense));
+    // console.log("Expense in edit: " + JSON.stringify(expense));
   };
 
   const deleteExpense = async (id) => {
-    console.log("Expense " + id + " delete");
+    // console.log("Expense " + id + " delete");
     try {
       const del = await fetch(
         `${BASE_URL}/${CONTEXT}/${API}/delete_expense/` + id,
