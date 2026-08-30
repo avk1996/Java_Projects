@@ -15,7 +15,7 @@ function Register() {
 
   const addUser = async (e) => {
     // e.preventDefault();
-    const registerURL = `${BASE_URL}/${CONTEXT}/${API}/register`;
+    const registerURL = `${BASE_URL}/${CONTEXT}/${API}/auth/register`;
     // console.log(
     //   "User: " + JSON.stringify(user) + ", register log: " + registerURL,
     // );

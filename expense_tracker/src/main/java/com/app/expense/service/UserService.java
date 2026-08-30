@@ -1,5 +1,6 @@
 package com.app.expense.service;
 
+import com.app.expense.dao.ExpenseDao;
 import com.app.expense.dao.UserDao;
 import com.app.expense.entity.User;
 import com.app.expense.helper.Role;
@@ -24,6 +25,9 @@ public class UserService {
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    private ExpenseDao expenseDao;
 
     public UserResponseDTO addUser(User user){
         try{
@@ -52,6 +56,7 @@ public class UserService {
     public UserResponseDTO deleteUser(int userId) {
         try{
             User existingUser = userDao.findById(userId).orElseThrow(()-> new RuntimeException("User not found"));
+            expenseDao.deleteByUser(existingUser);
             userDao.delete(existingUser);
             return modelMapper.map(existingUser, UserResponseDTO.class);
         } catch (RuntimeException e) {

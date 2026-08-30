@@ -41,7 +41,7 @@ public class SecurityConfig {
                                     .configurationSource( request -> {
                                         CorsConfiguration configuration = new CorsConfiguration();
 
-                                        configuration.setAllowedOrigins(List.of("http://localhost:5173/"));
+                                        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
                                         configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "OPTIONS"));
                                         configuration.setAllowedHeaders(List.of("*"));
                                         configuration.setAllowCredentials(true);
@@ -50,13 +50,13 @@ public class SecurityConfig {
                     authorizeHttpRequests(auth -> auth
                             // login and registration
                             .requestMatchers(new AntPathRequestMatcher("/api/expense/auth/login")).permitAll()
-                            .requestMatchers(new AntPathRequestMatcher("/api/expense/register")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/api/expense/auth/register")).permitAll()
 
                             // admin role
-                            .requestMatchers(new AntPathRequestMatcher("/api/expense/admin/**")).hasRole("ADMIN")
+                            .requestMatchers(new AntPathRequestMatcher("/api/expense/admin/**")).hasAuthority("ROLE_ADMIN")
 
                             // user role
-                            .requestMatchers(new AntPathRequestMatcher("/api/expense/**")).authenticated()
+                            .requestMatchers(new AntPathRequestMatcher("/api/expense/user/**")).permitAll()
                             .anyRequest().authenticated()
                     )
         .logout(out->out

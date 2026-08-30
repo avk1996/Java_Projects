@@ -1,11 +1,12 @@
 package com.app.expense.controller;
 
-import com.app.expense.entity.Expense;
 import com.app.expense.entity.User;
 import com.app.expense.response_dto.UserResponseDTO;
 import com.app.expense.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,10 @@ public class AdminController {
     @GetMapping("/get_users")
     public ResponseEntity<List<UserResponseDTO>> getUsers(){
         try{
+            Authentication authentication =
+                    SecurityContextHolder.getContext().getAuthentication();
+
+            System.out.println("Role: "+authentication.getAuthorities());
             return ResponseEntity.ok(userService.getUsers());
         } catch (Exception e) {
             return ResponseEntity.noContent().build();

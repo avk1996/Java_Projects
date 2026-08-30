@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/expense")
+@RequestMapping("/api/expense/user")
 public class ExpenseController {
 
     private static final Logger logger = LoggerFactory.getLogger(ExpenseController.class);

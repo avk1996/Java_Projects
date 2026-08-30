@@ -35,7 +35,7 @@ function ExpenseTracker() {
     setSpendingTime(time);
 
     const getExpenses = async () => {
-      const expenseURL = `${BASE_URL}/${CONTEXT}/${API}/get_expense_records_user`;
+      const expenseURL = `${BASE_URL}/${CONTEXT}/${API}/user/get_expense_records_user`;
       // console.log("Expense url: " + expenseURL);
       try {
         const response = await fetch(expenseURL, {
@@ -67,7 +67,7 @@ function ExpenseTracker() {
     // console.log(JSON.stringify(expense));
     try {
       const response = await fetch(
-        `${BASE_URL}/${CONTEXT}/${API}/add_expense`,
+        `${BASE_URL}/${CONTEXT}/${API}/user/add_expense`,
         {
           method: "POST",
           headers: {
@@ -91,7 +91,7 @@ function ExpenseTracker() {
   };
 
   const updateExpense = async (e) => {
-    const updateURL = `${BASE_URL}/${CONTEXT}/${API}/update_expense/${expense.id}`;
+    const updateURL = `${BASE_URL}/${CONTEXT}/${API}/user/update_expense/${expense.id}`;
     // console.log(
     //   "Expense: " + JSON.stringify(expense) + ", update log: " + updateURL,
     // );
@@ -121,7 +121,7 @@ function ExpenseTracker() {
     // console.log("Expense " + id + " delete");
     try {
       const del = await fetch(
-        `${BASE_URL}/${CONTEXT}/${API}/delete_expense/` + id,
+        `${BASE_URL}/${CONTEXT}/${API}/user/delete_expense/` + id,
         {
           method: "DELETE",
           credentials: "include",

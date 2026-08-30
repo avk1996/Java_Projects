@@ -7,7 +7,7 @@ function ExpenseTracker() {
     name: "",
     email: "",
     password: "",
-    role: ["ADMIN", "USER"],
+    role: "USER",
   });
 
   const [show, setShow] = useState(true);
@@ -19,8 +19,8 @@ function ExpenseTracker() {
   const API = import.meta.env.VITE_API_URI;
 
   useEffect(() => {
-    console.log(`${BASE_URL}/${CONTEXT}/${API}/admin/get_users`);
     const userURL = `${BASE_URL}/${CONTEXT}/${API}/admin/get_users`;
+    console.log(userURL);
     const getUsers = async () => {
       try {
         const response = await fetch(userURL, {
@@ -31,7 +31,7 @@ function ExpenseTracker() {
 
         const userData = await response.json();
 
-        // console.log(userData);
+        console.log(userData);
 
         setUsers(userData);
       } catch (error) {
@@ -41,21 +41,21 @@ function ExpenseTracker() {
     getUsers();
   }, []);
 
-  const addUser = async (newUser) => {
+  const addUser = async (e, newUser) => {
+    // e.preventDefault();
     setUser(newUser);
-    console.log(JSON.stringify(user));
+    console.log(JSON.stringify(newUser));
+    const createUserURL = `${BASE_URL}/${CONTEXT}/${API}/admin/create_user`;
+    console.log(createUserURL);
     try {
-      const response = await fetch(
-        `${BASE_URL}/${CONTEXT}/${API}/admin/create_user`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(newUser),
+      const response = await fetch(createUserURL, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(user),
+      });
       if (!response.ok) throw new Error("Unable to add new user");
       const expenseData = await response.json();
       console.log(expenseData);
@@ -65,12 +65,14 @@ function ExpenseTracker() {
   };
 
   const updateUser = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     console.log("User: " + JSON.stringify(user));
     const updateUserURL = `${BASE_URL}/${CONTEXT}/${API}/admin/update_user/${user.id}`;
+    console.log("user: " + updateUserURL);
     try {
       const response = await fetch(updateUserURL, {
         method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -274,7 +276,7 @@ function ExpenseTracker() {
               className="rounded-2xl border-2 p-2 mt-1"
               type="text"
               placeholder="username"
-              value={user.name}
+              value={user?.name || ""}
               onChange={(e) => setUser({ ...user, name: e.target.value })}
             />
           </div>
@@ -283,7 +285,7 @@ function ExpenseTracker() {
               className="rounded-2xl border-2 p-2 mt-1"
               type="text"
               placeholder="email"
-              value={user.email}
+              value={user?.email || ""}
               onChange={(e) =>
                 setUser({
                   ...user,

@@ -17,4 +17,6 @@ public interface ExpenseDao extends JpaRepository<Expense, Integer> {
     List<Expense> findByUserIdAndSpendingDateBetween(int userId, LocalDate startDate, LocalDate endDate);
 
     List<Expense> findByUser(User authenticateUser);
+
+    void deleteByUser(User existingUser);
 }
