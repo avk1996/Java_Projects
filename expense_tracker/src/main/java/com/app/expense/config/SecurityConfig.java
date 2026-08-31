@@ -51,6 +51,7 @@ public class SecurityConfig {
                             // login and registration
                             .requestMatchers(new AntPathRequestMatcher("/api/expense/auth/login")).permitAll()
                             .requestMatchers(new AntPathRequestMatcher("/api/expense/auth/register")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/api/expense/auth/reset_password")).permitAll()
 
                             // admin role
                             .requestMatchers(new AntPathRequestMatcher("/api/expense/admin/**")).hasAuthority("ROLE_ADMIN")

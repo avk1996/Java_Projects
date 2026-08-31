@@ -1,6 +1,8 @@
 package com.app.expense.controller;
 
+import com.app.expense.dao.UserDao;
 import com.app.expense.entity.User;
+import com.app.expense.request_dto.UserResetPasswordDTO;
 import com.app.expense.response_dto.UserResponseDTO;
 import com.app.expense.service.UserAuthenticationService;
 import com.app.expense.service.UserService;
@@ -42,11 +44,22 @@ public class UserAuthenticationController {
     public ResponseEntity<UserResponseDTO> addUser(@RequestBody User user){
         try {
             logger.info(user.toString());
-            System.out.println("controller: "+user.toString());
             UserResponseDTO newUser = userService.addUser(user);
             return ResponseEntity.accepted().body(newUser);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/reset_password")
+    public ResponseEntity<?> resetPassword(@RequestBody UserResetPasswordDTO userPasswords){
+        try {
+            logger.info("In Controller: {}",userPasswords.getIdentifier());
+            String response = userAuthenticationService.resetPassword(userPasswords);
+            logger.info("Response: {}",response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }

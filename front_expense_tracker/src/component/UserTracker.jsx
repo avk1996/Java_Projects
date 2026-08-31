@@ -44,9 +44,9 @@ function ExpenseTracker() {
   const addUser = async (e, newUser) => {
     // e.preventDefault();
     setUser(newUser);
-    console.log(JSON.stringify(newUser));
+    // console.log(JSON.stringify(newUser));
     const createUserURL = `${BASE_URL}/${CONTEXT}/${API}/admin/create_user`;
-    console.log(createUserURL);
+    // console.log(createUserURL);
     try {
       const response = await fetch(createUserURL, {
         method: "POST",
@@ -58,7 +58,7 @@ function ExpenseTracker() {
       });
       if (!response.ok) throw new Error("Unable to add new user");
       const expenseData = await response.json();
-      console.log(expenseData);
+      // console.log(expenseData);
     } catch (error) {
       console.log(error);
     }
@@ -66,9 +66,9 @@ function ExpenseTracker() {
 
   const updateUser = async (e) => {
     // e.preventDefault();
-    console.log("User: " + JSON.stringify(user));
+    // console.log("User: " + JSON.stringify(user));
     const updateUserURL = `${BASE_URL}/${CONTEXT}/${API}/admin/update_user/${user.id}`;
-    console.log("user: " + updateUserURL);
+    // console.log("user: " + updateUserURL);
     try {
       const response = await fetch(updateUserURL, {
         method: "PUT",
@@ -88,11 +88,11 @@ function ExpenseTracker() {
   const editUser = (user) => {
     setShow(false);
     setUser(user);
-    console.log("User in edit: " + JSON.stringify(user));
+    // console.log("User in edit: " + JSON.stringify(user));
   };
 
   const deleteUser = async (id) => {
-    console.log("User " + id + " delete");
+    // console.log("User " + id + " delete");
     try {
       const del = await fetch(
         `${BASE_URL}/${CONTEXT}/${API}/admin/delete_user/` + id,

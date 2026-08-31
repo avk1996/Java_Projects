@@ -4,6 +4,7 @@ import com.app.expense.dao.ExpenseDao;
 import com.app.expense.dao.UserDao;
 import com.app.expense.entity.User;
 import com.app.expense.helper.Role;
+import com.app.expense.request_dto.UserResetPasswordDTO;
 import com.app.expense.response_dto.UserResponseDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

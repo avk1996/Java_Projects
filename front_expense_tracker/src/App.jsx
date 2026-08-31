@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import ExpenseTracker from "./component/ExpensesTracker";
 import Register from "./pages/Register";
 import UserTracker from "./component/UserTracker";
+import Password from "./pages/Password";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/expenses" element={<ExpenseTracker />} />
         <Route path="/users" element={<UserTracker />} />
+        <Route path="/reset_password" element={<Password />} />
       </Routes>
     </BrowserRouter>
   );

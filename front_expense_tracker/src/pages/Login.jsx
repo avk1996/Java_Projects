@@ -77,10 +77,16 @@ function Login() {
                   })
                 }
               />
+              <p
+                className="mt-1 text-center text-sm text-gray-500 hover:text-blue-600 cursor-pointer transition-colors duration-200"
+                onClick={() => navigate("/reset_password")}
+              >
+                Forget Password?
+              </p>
             </div>
             <div>
               <button
-                className="bg-blue-600 text-white pb-1 pt-1 pr-3 pl-3 rounded-2xl hover:bg-blue-900"
+                className="w-full bg-blue-600 text-white pb-1 pt-1 pr-3 pl-3 rounded-xl hover:bg-blue-900"
                 type="sumbit"
               >
                 ⛩️Login
